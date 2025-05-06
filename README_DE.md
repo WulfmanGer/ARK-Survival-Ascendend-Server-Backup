@@ -14,6 +14,8 @@ Das Script lädt SaveGames und SaveArks via FTP herunter, legt `.gz`-Dateien sep
 - Bash-kompatible Umgebung
 - Die folgenden Tools müssen installiert sein:
 
+---
+
 ### 🛠️ Installation unter Ubuntu / Debian:
 
 ```bash
@@ -22,6 +24,29 @@ sudo apt install p7zip-full ncftp whiptail
 ```
 
 💡 **Hinweis:** Wer eine andere Distribution nutzt, kennt üblicherweise den passenden Paketmanager.
+
+## 💡Installation und Nutzung
+1. Script herunterladen
+   Lade die beiden Dateien (`ark_backup.conf` und `ark_backup.sh`) herunter:
+  ```bash
+  wget https://github.com/WulfmanGer/ARK-Survival-Ascendend-Server-Backup/ark_backup.conf
+  wget https://github.com/WulfmanGer/ARK-Survival-Ascendend-Server-Backup/ark_backup.sh
+  ```
+
+  Alternativ kannst du `curl` verwenden:
+  ```bash
+  curl -O https://github.com/dein-repository/ark_backup/ark_backup.conf
+  curl -O https://github.com/dein-repository/ark_backup/ark_backup.sh
+   ```
+2. Konfiguration anpassen
+  Bearbeite die `ark_backup.conf`, um deine persönlichen FTP-Daten und Pfade anzupassen. Nutze dafür einen Texteditor, z. B.:
+  ```bash
+  nano ark_backup.conf
+  ```
+3. Skript ausführbar machen
+  ```bash
+  chmod +x ark_backup.sh
+  ```
 
 ---
 
