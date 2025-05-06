@@ -1,53 +1,54 @@
 # 🧬 ARK: Survival Ascended – FTP Backup Script
 
-Ein Bash-Script zur automatisierten Sicherung von **ARK: Survival Ascended** Spielständen (z. B. von Nitrado gehosteten Servern).  
-Das Script lädt SaveGames und SaveArks via FTP herunter, legt `.gz`-Dateien separat ab und erstellt ein komprimiertes `.7z`-Archiv.
+A Bash script for automating backups of **ARK: Survival Ascended** game saves (e.g., from Nitrado-hosted servers).  
+The script downloads SaveGames and SaveArks via FTP, stores `.gz` files separately, and creates a compressed `.7z` archive.
 
-## Hinweis
-- Das Skript funktioniert derzeit nur mit FTP/FTPS. Wenn du SFTP oder SCP verwenden möchtest, musst du die entsprechenden Tools wie lftp oder scp verwenden. Wenn sich tester für scp/sftp finden, kann ich mich da gerne drum kümmern.
-- Das Skript wurde auf WSL v2 (Windows Subsystem for Linux) getestet.
+## Note
+- The script currently works only with FTP/FTPS. If you want to use SFTP or SCP, you will need to use corresponding tools like `lftp` or `scp`. If testers for SFTP/SCP are available, I can help with the implementation.
+- The script has been tested on **WSL v2** (Windows Subsystem for Linux).
 ---
 
-## ⚙️ Voraussetzungen
+## ⚙️ Requirements
 
-- **WSL 2** (Windows Subsystem for Linux) oder ein natives **Linux-System**
-- Bash-kompatible Umgebung
-- Die folgenden Tools müssen installiert sein:
+- **WSL 2** (Windows Subsystem for Linux) or a native **Linux system**
+- A bash-compatible environment
+- The following tools must be installed:
 
-### 🛠️ Installation unter Ubuntu / Debian:
+### 🛠️ Installation on Ubuntu / Debian:
 
 ```bash
 sudo apt update
 sudo apt install p7zip-full ncftp whiptail
+
 ```
 
-💡 **Hinweis:** Wer eine andere Distribution nutzt, kennt üblicherweise den passenden Paketmanager.
+💡 **Note:** If you're using a different distribution, you likely know the appropriate package manager.
 
 ---
 
-## 📁 Konfiguration (`ark_backup.conf`)
+## 📁 Configuration  (`ark_backup.conf`)
 
-Die Konfiguration erfolgt in der Datei `ark_backup.conf`.  
-Hier werden die lokalen Zielpfade und die Serverinformationen für den FTP-Zugriff definiert.
+Configuration is done in the `ark_backup.conf` file.
+Here, local target paths and FTP access server information are defined.
 
 ### 🔧 Wichtige Pfade:
 
 ```bash
-BasePath="c:\GameServer\Maps"        # Temporäres Zielverzeichnis für Spielstände
-GZDir="c:\GameServer\GZip"           # Hier landen .gz-Dateien vom Server
-ArchivePath="c:\GameServer\Archive"  # Speicherort für .7z-Backups + Logfiles
+BasePath="c:\GameServer\Maps"        # Temporary target directory for game saves
+GZDir="c:\GameServer\GZip"           # Directory for .gz files from the server
+ArchivePath="c:\GameServer\Archive"  # Location for .7z backups + log files
 ```
 
-📌 **Hinweis zu Pfadangaben:**
-- **Windows**: `C:\Pfad\zum\Ordner`
-- **Linux**: `/mnt/c/Pfad/zum/Ordner/`
-- Pfade werden automatisch ins Linux-Format konvertiert – ein `/` am Ende ist erlaubt.
+📌 **Note on Path Notation:**
+- **Windows**: `C:\Path\to\folder`
+- **Linux**: `/mnt/c/Path/to/folder/`
+- Paths are automatically converted to Linux format – a trailing `/` is allowed.
 
 ---
 
-### 🌐 FTP-Server-Liste
+### 🌐 FTP Server List
 
-Format der `FTP_SERVER_LIST` in der `ark_backup.conf`:
+The format of `FTP_SERVER_LIST` in `ark_backup.conf`:
 
 ```bash
 FTP_SERVER_LIST=(
@@ -61,73 +62,72 @@ FTP_SERVER_LIST=(
 
 | Feld         | Bedeutung |
 |--------------|-----------|
-| `ID`         | Interne Kennung → wird für Dateinamen & Verzeichnisse verwendet (**einmal gesetzt, nicht mehr ändern!**) |
+| `ID`         | Internal identifier → used for file names & directories  (**once set, do not change!**) |
 | `HOST:PORT`  | FTP-Adresse und Port |
 | `USERNAME`   | FTP-Benutzername |
 | `PASSWORD`   | FTP-Passwort |
-| `MAPNAME`    | Map-Name wie auf dem Server (z. B. `TheIsland_WP`) (**einmal gesetzt, nicht mehr ändern!**) |
-| `MAPNOTE`    | (Optional) Zusatzinfo z. B. für Cluster |
-| `DEFAULT`    | `on` → wird bei automatisiertem Lauf mitgesichert |
+| `MAPNAME`    | Map name as it appears on the server (e.g. `TheIsland_WP`) (**once set, do not change!**) |
+| `MAPNOTE`    | (Optional) Additional info, e.g., for clusters
+| `DEFAULT`    | `on` → Automatically backed up when run in automated mode, off → no backup in automated mode
 
 ---
 
-## ▶️ Ablauf des Scripts
+## ▶️ Script Workflow
 
-### Manuell starten:
+### Manually Start:
 
 ```bash
 ./ark_backup.sh
 ```
 
-1. Auswahlmenü für zu sichernde Maps (via `whiptail`)
-2. Optional: Eingabe eines Kommentars
-3. Ablauf pro Map:
-   - Vorherige Spielstände im Zielordner werden gelöscht
-   - SaveGames und SaveArks werden per FTP heruntergeladen
-   - `.gz`-Dateien werden separat ins `GZDir` verschoben
-   - Ein `.7z`-Archiv wird erstellt
-   - Alle Schritte werden in ein Logfile geschrieben
-4. ❗ Das heruntergeladene SaveGame bleibt erhalten – es wird erst beim nächsten Durchlauf gelöscht.
+1. A map selection menu appears (via `whiptail`)
+2. Optionally enter a comment for the backup
+3. For each selected map:
+   - Previous game saves in the target folder are deleted
+   - SaveGames and SaveArks are downloaded via FTP
+   - `.gz` files are moved to the `GZDir`
+   - A `.7z`archive is created
+   - All steps are logged in a logfile
+4. ❗ The downloaded save game remains in the folder – it will only be deleted on the next script run.
 
 ---
 
-### Automatisiert starten (z. B. via Cron):
+### Start Automatically (e.g., via Cron):
 
 ```bash
 ./ark_backup.sh automated
 ```
 
-- Keine Benutzereingaben
-- Es werden alle Maps mit `DEFAULT=on` automatisch gesichert
-- Logfile enthält den Hinweis: `"Automated Backup (DEFAULT=on servers)"`
+- No user input required
+- All maps with  `DEFAULT=on` will be automatically backed up
+- The logfile will contain the note: `"Automated Backup (DEFAULT=on servers)"`
 
 ---
 
-## 🗃️ Ergebnis
+## 🗃️ Output
 
-Nach dem Backup findest du:
+After the backup, you will find:
 
-- 🧩 `.gz`-Dateien im `GZDir`  
-  z. B. `GZip/001_TheIsland_WP/`
-- 📦 `.7z`-Archiv im `ArchivePath`  
-  z. B. `Archive/2025-05-06_001_TheIsland.7z`
-- 📄 Logfile mit Ablaufprotokoll  
-  z. B. `Archive/2025-05-06_001_TheIsland.log`
+- 🧩 `.gz` files in the im `GZDir`  
+  e.g., `GZip/001_TheIsland_WP/`
+- 📦 `.7z`archive in the  `ArchivePath`  
+  e.g., `Archive/2025-05-06_01_TheIsland.7z`
+- 📄 Logfile with the process log  
+  e.g., `Archive/2025-05-06_01_TheIsland.log`
 
 ---
 
 ## 💡 Optional & ToDo
 
-- sftp/scp-Integration
+- sftp/scp Integration
 
 ---
 
-## ❓ Häufige Hinweise
+## ❓ Frequently Asked Notes
 
-- **ID** und **MAPNAME** dürfen nachträglich nicht geändert werden, da sie in Ordner- und Dateinamen verwendet werden!
-- Bei Problemen mit `wslpath`: Stelle sicher, dass WSL 2 korrekt installiert ist.
-- `whiptail` wird für die Benutzerinteraktion benötigt – alternativ ließe sich `dialog` einbauen.
+- **ID** and **MAPNAME** should not be changed after initial setup, as they are used in folder and file names!
+- If you have issues with `wslpath`: Make sure WSL 2 is correctly installed.
+- `whiptail` is required for user interaction – alternatively, `dialog` could be used.
 
 ---
-
-Viel Spaß mit dem Script – Backups retten Leben 😉
+Enjoy using the script – Backups save lives 😉
