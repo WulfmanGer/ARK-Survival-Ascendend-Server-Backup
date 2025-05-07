@@ -29,14 +29,14 @@ sudo apt install p7zip-full ncftp whiptail
 1. Script herunterladen
    Lade die beiden Dateien (`ark_backup.conf` und `ark_backup.sh`) herunter:
   ```bash
-  wget https://github.com/WulfmanGer/ARK-Survival-Ascendend-Server-Backup/ark_backup.conf
-  wget https://github.com/WulfmanGer/ARK-Survival-Ascendend-Server-Backup/ark_backup.sh
+  wget https://raw.githubusercontent.com/WulfmanGer/ARK-Survival-Ascendend-Server-Backup/refs/heads/main/ark_backup.conf
+  wget https://raw.githubusercontent.com/WulfmanGer/ARK-Survival-Ascendend-Server-Backup/refs/heads/main/ark_backup.sh
   ```
 
   Alternativ kannst du `curl` verwenden:
   ```bash
-  curl -O https://github.com/dein-repository/ark_backup/ark_backup.conf
-  curl -O https://github.com/dein-repository/ark_backup/ark_backup.sh
+  curl -O https://raw.githubusercontent.com/WulfmanGer/ARK-Survival-Ascendend-Server-Backup/refs/heads/main/ark_backup.conf
+  curl -O https://raw.githubusercontent.com/WulfmanGer/ARK-Survival-Ascendend-Server-Backup/refs/heads/main/ark_backup.sh
    ```
 2. Konfiguration anpassen
   Bearbeite die `ark_backup.conf`, um deine persönlichen FTP-Daten und Pfade anzupassen. Nutze dafür einen Texteditor, z. B.:
